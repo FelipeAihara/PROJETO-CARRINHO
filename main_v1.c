@@ -21,7 +21,6 @@
 #define INPUT_PORT DT_NODELABEL(gpioe)
 #define INPUT_PIN1 20
 #define INPUT_PIN2 21
-#define duty 500
 
 
 int main(void)
@@ -48,7 +47,7 @@ int main(void)
     }
 
     // Configura os motores
-    pwm_tpm_Init(TPM0, TPM_PLLFLL, TPM_MODULE, TPM_CLK, PS_128, EDGE_PWM);
+    pwm_tpm_Init(TPM0, TPM_PLLFLL, TPM_MODULE, TPM_CLK, PS_128, CENTER_PWM);
     pwm_tpm_Ch_Init(TPM0, 3, TPM_PWM_H,GPIOD,3);
     pwm_tpm_Ch_Init(TPM0, 2, TPM_PWM_H,GPIOD,2);
     pwm_tpm_Ch_Init(TPM0, 0, TPM_PWM_H,GPIOD,0);
@@ -57,13 +56,11 @@ int main(void)
     while (1) {
         esquerda = gpio_pin_get(input_dev, INPUT_PIN1);
 		direita = gpio_pin_get(input_dev, INPUT_PIN2);
-        printk("Valor do esquerda: %d\n", esquerda);
-        printk("Valor do direita: %d\n", direita);
 
-        if (esquerda == 1 && direita == 1) {
-            pwm_tpm_CnV(TPM0, 3, 0);
+        if (esquerda == 0 && direita == 0) {
+            pwm_tpm_CnV(TPM0, 3, 800);
             pwm_tpm_CnV(TPM0, 2, 0);
-            pwm_tpm_CnV(TPM0, 0, 0);
+            pwm_tpm_CnV(TPM0, 0, 800);
             pwm_tpm_CnV(TPM0, 5, 0);
         }
         else if (esquerda == 1 && direita == 0) {
@@ -78,10 +75,10 @@ int main(void)
             pwm_tpm_CnV(TPM0, 0, 0);
             pwm_tpm_CnV(TPM0, 5, 0);
         }
-        else if (esquerda == 0 && direita == 0) {
-            pwm_tpm_CnV(TPM0, 3, duty);
+        else if (esquerda == 1 && direita == 1) {
+            pwm_tpm_CnV(TPM0, 3, 800);
             pwm_tpm_CnV(TPM0, 2, 0);
-            pwm_tpm_CnV(TPM0, 0, duty);
+            pwm_tpm_CnV(TPM0, 0, 800);
             pwm_tpm_CnV(TPM0, 5, 0);
         }
     }
